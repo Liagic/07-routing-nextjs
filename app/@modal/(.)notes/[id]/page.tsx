@@ -1,5 +1,5 @@
 import { getSingleNote } from '@/lib/api';
-import NotePreview from './NotePreview';
+import NotePreview from './NotePreview.client';
 import {
   dehydrate,
   HydrationBoundary,
@@ -11,7 +11,6 @@ type Props = {
 
 export default async function NotePreviewPage({ params }: Props) {
   const { id } = await params;
-  const note = await getSingleNote(id);
   const queryClient = new QueryClient();
 
   queryClient.prefetchQuery({
