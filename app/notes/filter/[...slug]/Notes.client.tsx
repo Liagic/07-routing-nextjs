@@ -13,8 +13,10 @@ import NoteList from '@/components/NoteList/NoteList';
 import NoteForm from '@/components/NoteForm/NoteForm';
 import Loader from '@/components/Loader/Loader';
 import ErrorMessage from '@/components/ErrorMessage/ErrorMessage';
-
-function NotesClient() {
+interface NotesClientProps {
+  tag: string;
+}
+function NotesClient({ tag }: NotesClientProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -23,10 +25,9 @@ function NotesClient() {
     setCurrentPage(1);
   }, 1000);
   const { data, isSuccess, isLoading, isError } = useQuery({
-    queryKey: ['notes', searchQuery, currentPage],
+    queryKey: ['notes', searchQuery, currentPage, tag],
     queryFn: () => {
-      console.log('fetching notes:', searchQuery, currentPage);
-      return fetchNotes(searchQuery, currentPage);
+      return fetchNotes(searchQuery, currentPage, 12, tag);
     },
     staleTime: 1000 * 60 * 5,
     placeholderData: keepPreviousData,

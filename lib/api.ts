@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { all } from 'axios';
 import type { Note } from '@/types/note';
 interface NoteHubResponse {
   notes: Note[];
@@ -9,6 +9,7 @@ interface CreateNote {
   content: string;
   tag: string;
 }
+
 const noteAPI = axios.create({
   baseURL: 'https://notehub-public.goit.study/api',
   headers: {
@@ -16,17 +17,27 @@ const noteAPI = axios.create({
   },
 });
 export const fetchNotes = async (
-  searchText: string,
+  searchText: string = '',
   page: number = 1,
-  perPage: number = 12
+  perPage: number = 12,
+  tag: string = ''
 ): Promise<NoteHubResponse> => {
-  const response = await noteAPI.get<NoteHubResponse>('/notes', {
-    params: {
-      search: searchText,
-      page: page,
-      perPage: perPage,
-    },
-  });
+  const params: {
+    search?: string;
+    page: number;
+    perPage: number;
+    tag?: string;
+  } = {
+    page,
+    perPage,
+  };
+  if (searchText.trim()) {
+    params.search = searchText;
+  }
+  if (tag.trim()) {
+    params.tag = tag;
+  }
+  const response = await noteAPI.get<NoteHubResponse>('/notes', { params });
   return response.data;
 };
 export const createNote = async (note: CreateNote): Promise<Note> => {
